@@ -8,26 +8,24 @@ init();
  */
 function init()
 {
-    $output = '';
-
-    $command = $_GET['command'];
+    $command = getParam('command');
     switch (strtolower($command)) {
         case 'authenticate':
-            $user = $_GET['user'];
-            $pass = $_GET['pass'];
+            $user = getParam('user');
+            $pass = getParam('pass');
             $output = authenticate($user, $pass);
             break;
 
         case 'get':
-            $authToken = $_GET['authToken'];
+            $authToken = getParam('authToken');
             $output = getTransactions($authToken);
             break;
 
         case 'createtransaction':
-            $authToken = $_GET['authToken'];
-            $date = $_GET['date'];
-            $merchant = $_GET['merchant'];
-            $amount = $_GET['amount'];
+            $authToken = getParam('authToken');
+            $date = getParam('date');
+            $merchant = getParam('merchant');
+            $amount = getParam('amount');
             $output = createTransaction($authToken, $date, $merchant, $amount);
             break;
 
@@ -35,10 +33,43 @@ function init()
             // Send a page not found and equivalent JSON if a proper command was not issued
             http_response_code(404);
             print json_encode(['jsonCode' => 404]);
-            break;
+            die;
+            break; // not necessary but left here in case the block is changed not to die in the future
     }
 
     print $output;
+}
+
+/**
+ * Return an error message if a parameter is not specified
+ *
+ * @param $name
+ */
+function missingParameter($name)
+{
+    http_response_code(400);
+    print json_encode([
+        'jsonCode' => 400,
+        'message' => "Parameter '$name' must be specified",
+    ]);
+
+    die;
+}
+
+/**
+ * Get a GET parameter or show error if not found
+ *
+ * @param $name
+ *
+ * @return mixed|null
+ */
+function getParam($name)
+{
+    if (isset($_GET[$name])) {
+        return $_GET[$name];
+    }
+
+    missingParameter($name);
 }
 
 /**
