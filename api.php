@@ -4,6 +4,7 @@ init();
 
 /**
  * Main script body. Makes different calls depending on input params
+ * Note, we're relying on the API to validate input
  */
 function init()
 {
@@ -14,14 +15,26 @@ function init()
         case 'authenticate':
             $user = $_GET['user'];
             $pass = $_GET['pass'];
-            //TODO: Filter/validate
             $output = authenticate($user, $pass);
             break;
 
-        case 'transactions':
+        case 'get':
             $authToken = $_GET['authToken'];
-            //TODO: Filter/validate
             $output = getTransactions($authToken);
+            break;
+
+        case 'createtransaction':
+            $authToken = $_GET['authToken'];
+            $date = $_GET['date'];
+            $merchant = $_GET['merchant'];
+            $amount = $_GET['amount'];
+            $output = createTransaction($authToken, $date, $merchant, $amount);
+            break;
+
+        default:
+            // Send a page not found and equivalent JSON if a proper command was not issued
+            http_response_code(404);
+            print json_encode(['jsonCode' => 404]);
             break;
     }
 
@@ -34,7 +47,7 @@ function init()
  * @param $user
  * @param $pass
  *
- * @return mixed
+ * @return string
  */
 function authenticate($user, $pass)
 {
@@ -48,7 +61,7 @@ function authenticate($user, $pass)
  *
  * @param $authToken
  *
- * @return mixed
+ * @return string
  */
 function getTransactions($authToken)
 {
@@ -58,16 +71,31 @@ function getTransactions($authToken)
 }
 
 /**
+ * @param $authToken
+ * @param $date
+ * @param $merchant
+ * @param $amount
+ *
+ * @return string
+ */
+function createTransaction($authToken, $date, $merchant, $amount)
+{
+    $url = "https://api.expensify.com?command=CreateTransaction&authToken=$authToken&created=$date&amount=$amount&merchant=$merchant";
+
+    return makeCall($url);
+}
+
+/**
  * Make a CURL call to a URL
+ *
  * @param $url
  *
- * @return mixed
+ * @return string
  */
 function makeCall($url)
 {
     $headers = [
         'Accept: application/json',
-        'Content-Type: application/json',
     ];
 
     $ch = curl_init();
