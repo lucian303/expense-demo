@@ -10,11 +10,18 @@ function init()
     $output = '';
 
     $command = $_GET['command'];
-    switch ($command) {
-        case 'Authenticate':
+    switch (strtolower($command)) {
+        case 'authenticate':
             $user = $_GET['user'];
             $pass = $_GET['pass'];
+            //TODO: Filter/validate
             $output = authenticate($user, $pass);
+            break;
+
+        case 'transactions':
+            $authToken = $_GET['authToken'];
+            //TODO: Filter/validate
+            $output = getTransactions($authToken);
             break;
     }
 
@@ -32,6 +39,20 @@ function init()
 function authenticate($user, $pass)
 {
     $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=$user&partnerUserSecret=$pass";
+
+    return makeCall($url);
+}
+
+/**
+ * Get list of all transactions on the account
+ *
+ * @param $authToken
+ *
+ * @return mixed
+ */
+function getTransactions($authToken)
+{
+    $url = "https://api.expensify.com?command=Get&authToken=$authToken&returnValueList=transactionList";
 
     return makeCall($url);
 }
