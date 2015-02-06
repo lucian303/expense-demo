@@ -1,22 +1,26 @@
 <?php
 
-function authenticate()
+function authenticate($user, $pass)
 {
-    $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=expensifytest@mailinator.com&partnerUserSecret=hire_me";
+    $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=$user&partnerUserSecret=$pass";
 
-    $ch = curl_init();
+    return makeCall($url);
+}
+
+function makeCall($url)
+{
     $headers = [
         'Accept: application/json',
+        'Content-Type: application/json',
     ];
 
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    $response = curl_exec($ch);
-
-    return $response;
+    return curl_exec($ch);
 }
 
-print authenticate();
+print authenticate('expensifytest@mailinator.com', 'hire_me');
