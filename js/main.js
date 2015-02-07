@@ -23,7 +23,7 @@
      * @param message
      */
     function showLoginMessage(message) {
-        $('#login-message').text(message);
+        $('#login-message').html(message);
     }
 
     /**
@@ -108,18 +108,24 @@
             showGeneralMessage('Loading transactions ... <img src="img/ajax-loader.gif" />');
 
             transactionUrl = 'api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
-            $.getJSON(transactionUrl, function(data) {
-                // Check authToken just in case the user logged out while we were waiting for the callback to fire
-                if (user.authToken) {
-                    showGeneralMessage(''); // remove loading transactions message and spinner
-                    showCreateTransactionMessage(''); // clear the adding transaction message and spinner
+            $.ajax(transactionUrl, {
+                success: function(data) {
+                    // Check authToken just in case the user logged out while we were waiting for the callback to fire
+                    if (user.authToken) {
+                        showGeneralMessage(''); // remove loading transactions message and spinner
+                        showCreateTransactionMessage(''); // clear the adding transaction message and spinner
 
-                    if (data.jsonCode && data.jsonCode === HTTP_OK) {
-                        showTransactions(data.transactionList);
-                    } else {
-                        showGeneralMessage('Thre was a problem retrieving transactions.');
+                        if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                            showTransactions(data.transactionList);
+                        } else {
+                            showGeneralMessage('Thre was a problem retrieving transactions.');
+                        }
                     }
-                }
+                },
+                error: function () {
+                    showGeneralMessage('Thre was a problem retrieving transactions.');
+                },
+                dataType: 'json'
             });
         }
     }
@@ -140,19 +146,27 @@
             return;
         }
 
-        $.getJSON(loginUrl, function (data) {
-            if (data.jsonCode && data.jsonCode === HTTP_OK) {
-                $.cookie('authToken', data.authToken);
-                $.cookie('email', data.email);
+        showLoginMessage('Loggin in ... <img src="img/ajax-loader.gif" />');
 
-                user.authToken = data.authToken;
-                user.email = data.email;
+        $.ajax(loginUrl, {
+            success: function (data) {
+                if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                    $.cookie('authToken', data.authToken);
+                    $.cookie('email', data.email);
 
-                checkAuth();
-                getTransactions();
-            } else {
+                    user.authToken = data.authToken;
+                    user.email = data.email;
+
+                    checkAuth();
+                    getTransactions();
+                } else {
+                    showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
+                }
+            },
+            error: function () {
                 showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
-            }
+            },
+            dataType: 'json'
         });
     });
 
@@ -196,7 +210,6 @@
             success: function (data) {
                 // Check authToken just in case the user logged out while we were waiting for the callback to fire
                 if (user.authToken) {
-                    console.log(data)
                     if (data.jsonCode && data.jsonCode === HTTP_OK) {
                         getTransactions();
                     } else {
