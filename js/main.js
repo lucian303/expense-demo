@@ -5,7 +5,6 @@
             authToken: null,
             email: null
         },
-        transactions,
         HTTP_OK = 200;
 
     init();
@@ -47,8 +46,15 @@
                 $('#logged-in-email').text('');
             }
         } else {
+            // Show logout messages and hide/clear everything else
+            $('#transactions').hide();
             $('#logged-in-aside').hide();
             $('#logged-out-aside').show();
+            $('#transactions-body').html('');
+
+            showLoginMessage('');
+            showGeneralMessage('There are no transactions because you are currently not logged in.');
+            showCreateTransactionMessage('');
         }
     }
 
@@ -103,16 +109,18 @@
 
             transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.getJSON(transactionUrl, function(data) {
-                if (data.jsonCode && data.jsonCode === HTTP_OK) {
-                    transactions = data.transactionList;
-                    showTransactions(data.transactionList);
-                }
+                // Check authToken just in case the user logged out while we were waiting for the callback to fire
+                if (user.authToken) {
+                    showGeneralMessage(''); // remove loading transactions message and spinner
+                    showCreateTransactionMessage(''); // clear the adding transaction message and spinner
 
-                showGeneralMessage(''); // remove loading transactions message and spinner
-                showCreateTransactionMessage(''); // clear the adding transaction message and spinner
+                    if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                        showTransactions(data.transactionList);
+                    } else {
+                        showGeneralMessage('Thre was a problem retrieving transactions.');
+                    }
+                }
             });
-        } else {
-            $('#general-message').html('There are no transactions because you are currently not logged in.');
         }
     }
 
@@ -177,10 +185,13 @@
         }
 
         $.getJSON(createTransactionUrl, function (data) {
-            if (data.jsonCode && data.jsonCode === HTTP_OK) {
-                getTransactions();
-            } else {
-                showCreateTransactionMessage('There was a problem adding the transaction.');
+            // Check authToken just in case the user logged out while we were waiting for the callback to fire
+            if (user.authToken) {
+                if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                    getTransactions();
+                } else {
+                    showCreateTransactionMessage('There was a problem adding the transaction.');
+                }
             }
         });
     });
@@ -196,6 +207,6 @@
         user.email = null;
 
         checkAuth();
-        getTransactions();
+        showLoginMessage('You have been logged out.');
     });
 }(jQuery));
