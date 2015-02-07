@@ -107,10 +107,11 @@
     /**
      * Login callback, attached to login button sets cookies and internal user object
      */
-    $('#login').on('click', function () {
-        var email = $('#email').val(),
-            password = $('#password').val(),
-            loginUrl = '/api.php?command=authenticate&email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password);
+    $('#login-button').on('click', function () {
+        var email = $('#login-email').val(),
+            password = $('#login-password').val(),
+            loginUrl = '/api.php?command=authenticate&email=' + encodeURIComponent(email) +
+                '&password=' + encodeURIComponent(password);
 
         showLoginMessage('');
 
@@ -136,9 +137,48 @@
     });
 
     /**
+     * Show information and error messages when adding a transaction
+     *
+     * @param message
+     */
+    function showCreateTransactionMessage(message) {
+        $('#add-transaction-message').html(message);
+    }
+
+    /**
+     * Callback for the add transaction button
+     */
+    $('#add-transaction-button').on('click', function () {
+        var date = $('#add-transaction-date').val(),
+            merchant = $('#add-transaction-merchant').val(),
+            amount = $('#add-transaction-amount').val(),
+            createTransactionUrl = '/api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
+                '&date=' + encodeURIComponent(date) +
+                '&merchant=' + encodeURIComponent(merchant) +
+                '&amount=' + encodeURIComponent(amount * 100); // supplied amount is in cents, not dollars
+
+        showCreateTransactionMessage('Adding transaction ... <img src="img/ajax-loader.gif" />');
+
+        if (!date || !merchant || !amount) {
+            showCreateTransactionMessage('Date, merchant, and amount must all be specified.');
+            return;
+        }
+
+        $.getJSON(createTransactionUrl, function (data) {
+            showCreateTransactionMessage('');
+
+            if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                getTransactions();
+            } else {
+                showCreateTransactionMessage('There was a problem adding the transaction.');
+            }
+        });
+    });
+
+    /**
      * Logout callback clears cookies and user object
      */
-    $('#logout').on('click', function () {
+    $('#logout-button').on('click', function () {
         $.removeCookie('authToken');
         $.removeCookie('email');
 

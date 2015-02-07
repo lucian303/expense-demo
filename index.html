@@ -48,13 +48,13 @@
                     <h3>Login</h3>
                     <form>
                         <div>
-                            <label for="email">E-mail:&nbsp;</label><input type="text" id="email" />
+                            <label for="login-email">E-mail:&nbsp;</label><input type="text" id="login-email" />
                         </div>
                         <div>
-                            <label for="password">Password:&nbsp;</label><input type="password" id="password" />
+                            <label for="login-password">Password:&nbsp;</label><input type="password" id="login-password" />
                         </div>
                         <div>
-                            <input type="button" id="login" value="Login" class="expensify-button" />
+                            <input type="button" id="login-button" value="Login" class="expensify-button" />
                         </div>
                     </form>
                     <p id="login-message"></p>
@@ -63,24 +63,24 @@
                 <aside id="logged-in-aside">
                     <p><span id="logged-in-email"></span> is logged in.</p>
                     <div>
-                        <input type="button" id="logout" value="Logout" class="expensify-button" />
+                        <input type="button" id="logout-button" value="Logout" class="expensify-button" />
                     </div>
                     <div id="add-transaction-form">
                         <form>
                             <div>
-                                <label for="date">Date:&nbsp;</label><input type="text" id="date" />
+                                <label for="add-transaction-date">Date:&nbsp;</label><input type="text" id="add-transaction-date" />
                             </div>
                             <div>
-                                <label for="merchant">Merchant:&nbsp;</label><input type="text" id="merchant" />
+                                <label for="add-transaction-merchant">Merchant:&nbsp;</label><input type="text" id="add-transaction-merchant" />
                             </div>
                             <div>
-                                <label for="amount">Amount:&nbsp;</label><input type="text" id="amount" />
+                                <label for="add-transaction-amount">Amount:&nbsp;</label><input type="text" id="add-transaction-amount" />
                             </div>
                             <div>
-                                <input type="button" id="add-transaction" value="Add Transaction" class="expensify-button" />
+                                <input type="button" id="add-transaction-button" value="Add Transaction" class="expensify-button" />
                             </div>
                         </form>
-                        <p id="add-message"></p>
+                        <p id="add-transaction-message"></p>
                     </div>
                 </aside>
             </div> <!-- #main -->
