@@ -107,7 +107,7 @@
         if (user.authToken) {
             showGeneralMessage('Loading transactions ... <img src="img/ajax-loader.gif" />');
 
-            transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
+            transactionUrl = 'api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.getJSON(transactionUrl, function(data) {
                 // Check authToken just in case the user logged out while we were waiting for the callback to fire
                 if (user.authToken) {
@@ -130,7 +130,7 @@
     $('#login-button').on('click', function () {
         var email = $('#login-email').val(),
             password = $('#login-password').val(),
-            loginUrl = '/api.php?command=authenticate&email=' + encodeURIComponent(email) +
+            loginUrl = 'api.php?command=authenticate&email=' + encodeURIComponent(email) +
                 '&password=' + encodeURIComponent(password);
 
         showLoginMessage('');
@@ -172,27 +172,42 @@
         var date = $('#add-transaction-date').val(),
             merchant = $('#add-transaction-merchant').val(),
             amount = $('#add-transaction-amount').val(),
-            createTransactionUrl = '/api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
-                '&date=' + encodeURIComponent(date) +
-                '&merchant=' + encodeURIComponent(merchant) +
-                '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // supplied amount is in cents, not dollars
+            createTransactionUrl;
 
-        showCreateTransactionMessage('Adding transaction ... <img src="img/ajax-loader.gif" />');
+        // Check for some common errors
+        if (isNaN(amount)) {
+            showCreateTransactionMessage('Amount must be a number.');
+            return;
+        }
 
         if (!date || !merchant || !amount) {
             showCreateTransactionMessage('Date, merchant, and amount must all be specified.');
             return;
         }
 
-        $.getJSON(createTransactionUrl, function (data) {
-            // Check authToken just in case the user logged out while we were waiting for the callback to fire
-            if (user.authToken) {
-                if (data.jsonCode && data.jsonCode === HTTP_OK) {
-                    getTransactions();
-                } else {
-                    showCreateTransactionMessage('There was a problem adding the transaction.');
+        showCreateTransactionMessage('Adding transaction ... <img src="img/ajax-loader.gif" />');
+
+        createTransactionUrl = 'api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
+            '&date=' + encodeURIComponent(date) +
+            '&merchant=' + encodeURIComponent(merchant) +
+            '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // supplied amount is in cents, not dollars
+
+        $.ajax(createTransactionUrl, {
+            success: function (data) {
+                // Check authToken just in case the user logged out while we were waiting for the callback to fire
+                if (user.authToken) {
+                    console.log(data)
+                    if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                        getTransactions();
+                    } else {
+                        showCreateTransactionMessage('There was a problem adding the transaction.');
+                    }
                 }
-            }
+            },
+            error: function () {
+                showCreateTransactionMessage('There was a problem adding the transactionblah.');
+            },
+            dataType: 'json'
         });
     });
 
