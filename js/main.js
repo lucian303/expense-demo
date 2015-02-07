@@ -116,6 +116,7 @@
 
         if (!email || !password) {
             showLoginMessage('Both username and password must be specified.');
+            return;
         }
 
         $.getJSON(loginUrl, function (data) {
