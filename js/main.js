@@ -53,13 +53,13 @@
      * Login callback, attached to login button sets cookies and internal user object
      */
     $('#login').on('click', function () {
-        var username = $('#email').val(),
+        var email = $('#email').val(),
             password = $('#password').val(),
-            loginUrl = '/api.php?command=authenticate&email=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
+            loginUrl = '/api.php?command=authenticate&email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password);
 
         showLoginMessage('');
 
-        if (!username || !password) {
+        if (!email || !password) {
             showLoginMessage('Both username and password must be specified.');
         }
 
