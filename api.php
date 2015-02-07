@@ -11,9 +11,9 @@ function init()
     $command = getParam('command');
     switch (strtolower($command)) {
         case 'authenticate':
-            $user = getParam('user');
-            $pass = getParam('pass');
-            $output = authenticate($user, $pass);
+            $email = getParam('email');
+            $password = getParam('password');
+            $output = authenticate($email, $password);
             break;
 
         case 'get':
@@ -75,14 +75,15 @@ function getParam($name)
 /**
  * Authenticate with the expensify API
  *
- * @param $user
+ * @param $email
  * @param $pass
  *
  * @return string
  */
-function authenticate($user, $pass)
+function authenticate($email, $pass)
 {
-    $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=$user&partnerUserSecret=$pass";
+    // Normally we would store API keys outside the app in the environment and out of the repo
+    $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=$email&partnerUserSecret=$pass";
 
     return makeCall($url);
 }
