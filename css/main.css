@@ -183,7 +183,7 @@ aside input {
 
 #transactions td {
     padding: 5px;
-    border: 1px solid #000000;
+    border: 1px solid black;
 }
 
 #add-transaction-form {
@@ -193,6 +193,12 @@ aside input {
 .expensify-button {
     padding: 10px;
     margin-top: 5px;
+}
+
+.author {
+    text-align: right;
+    margin-top: 25px;
+    color: white;
 }
 
 /* ==========================================================================
