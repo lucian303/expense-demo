@@ -82,6 +82,9 @@ function getParam($name)
  */
 function authenticate($email, $pass)
 {
+    $email = urlencode($email);
+    $pass = urlencode($pass);
+
     // Normally we would store API keys outside the app in the environment and out of the repo
     $url = "https://api.expensify.com?command=Authenticate&partnerName=applicant&partnerPassword=d7c3119c6cdab02d68d9&partnerUserID=$email&partnerUserSecret=$pass";
 
@@ -97,6 +100,8 @@ function authenticate($email, $pass)
  */
 function getTransactions($authToken)
 {
+    $authToken = urlencode($authToken);
+
     $url = "https://api.expensify.com?command=Get&authToken=$authToken&returnValueList=transactionList";
 
     return makeCall($url);
@@ -112,6 +117,11 @@ function getTransactions($authToken)
  */
 function createTransaction($authToken, $date, $merchant, $amount)
 {
+    $authToken = urlencode($authToken);
+    $date = urlencode($date);
+    $amount = urlencode($amount);
+    $merchant = urlencode($merchant);
+
     $url = "https://api.expensify.com?command=CreateTransaction&authToken=$authToken&created=$date&amount=$amount&merchant=$merchant";
 
     return makeCall($url);
