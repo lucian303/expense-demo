@@ -156,7 +156,7 @@ nav a:hover {
    ========================================================================== */
 
 article {
-    min-height: 240px;
+    min-height: 280px;
     display: block;
 }
 
@@ -184,6 +184,15 @@ aside input {
 #transactions td {
     padding: 5px;
     border: 1px solid #000000;
+}
+
+#add-transaction-form {
+    margin-top: 20px;
+}
+
+.expensify-button {
+    padding: 10px;
+    margin-top: 5px;
 }
 
 /* ==========================================================================

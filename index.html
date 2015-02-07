@@ -53,7 +53,7 @@
                             <label for="password">Password:&nbsp;</label><input type="password" id="password" />
                         </div>
                         <div>
-                            <input type="button" id="login" value="Login" />
+                            <input type="button" id="login" value="Login" class="expensify-button" />
                         </div>
                     </form>
                     <p id="login-message"></p>
@@ -62,8 +62,24 @@
                 <aside id="logged-in-aside">
                     <p><span id="logged-in-email"></span> is logged in.</p>
                     <div>
-                        <input type="button" id="add-transaction" value="Add Transaction" />
-                        <input type="button" id="logout" value="Logout" />
+                        <input type="button" id="logout" value="Logout" class="expensify-button" />
+                    </div>
+                    <div id="add-transaction-form">
+                        <form>
+                            <div>
+                                <label for="date">Date:&nbsp;</label><input type="text" id="date" />
+                            </div>
+                            <div>
+                                <label for="merchant">Merchant:&nbsp;</label><input type="text" id="merchant" />
+                            </div>
+                            <div>
+                                <label for="amount">Amount:&nbsp;</label><input type="text" id="amount" />
+                            </div>
+                            <div>
+                                <input type="button" id="add-transaction" value="Add Transaction" class="expensify-button" />
+                            </div>
+                        </form>
+                        <p id="add-message"></p>
                     </div>
                 </aside>
             </div> <!-- #main -->
