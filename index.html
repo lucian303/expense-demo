@@ -20,12 +20,6 @@
         <div class="header-container">
             <header class="wrapper clearfix">
                 <h1 class="title">Expensify Demo</h1>
-                <nav>
-                    <ul>
-                        <li><a href="#">Transactions</a></li>
-                        <li><a href="#">Add Transaction</a></li>
-                    </ul>
-                </nav>
             </header>
         </div>
 
@@ -34,7 +28,18 @@
                 <article>
                     <section>
                         <h2>Transactions</h2>
-                        <div id="transactions"></div>
+                        <table id="transactions">
+                            <thead>
+                            <tr>
+                                <td><strong>Date</strong></td>
+                                <td><strong>Merchant</strong></td>
+                                <td><strong>Amount</strong></td>
+                            </tr>
+                            </thead>
+                            <tbody id="transactions-body">
+                            </tbody>
+                        </table>
+                        <div></div>
                         <p id="general-message"></p>
                     </section>
                 </article>
@@ -56,9 +61,9 @@
                 </aside>
 
                 <aside id="logged-in-aside">
-                    <h3>Profile</h3>
                     <p><span id="logged-in-email"></span> is logged in.</p>
                     <div>
+                        <input type="button" id="add-transaction" value="Add Transaction" />
                         <input type="button" id="logout" value="Logout" />
                     </div>
                 </aside>

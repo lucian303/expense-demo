@@ -53,12 +53,29 @@
     }
 
     /**
+     * Format an amount in cents into a dollar figure
+     *
+     * @param amount
+     * @returns {string}
+     */
+    function formatCents(amount) {
+        return '$' + (amount / 100).toFixed(2); // amount is stored in cents
+    }
+
+    /**
      * Show transactions in a table
      *
      * @param transactions
      */
     function showTransactions(transactions) {
+        var tableRows = '';
 
+        transactions.forEach(function (value) {
+            tableRows += '<tr><td>' + value.created +'</td><td>' + value.merchant + '</td><td>' + formatCents(value.amount) + '</td></tr>';
+        });
+
+        $('#transactions-body').html(tableRows);
+        $('#transactions').show();
     }
 
     /**
@@ -67,8 +84,11 @@
     function getTransactions() {
         var transactionUrl;
 
+        $('#transactions').hide();
+        $('#transactions-body').html(''); // clear transaction display
+
         if (user.authToken) {
-            $('#general-message').text('');
+            $('#general-message').html('Loading transactions ... <img src="img/ajax-loader.gif" />');
 
             transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.getJSON(transactionUrl, function(data) {
@@ -78,7 +98,7 @@
                 }
             });
         } else {
-            $('#general-message').text('There are no transactions because you are currently not logged in.');
+            $('#general-message').html('There are no transactions because you are currently not logged in.');
         }
     }
 

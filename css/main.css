@@ -167,6 +167,15 @@ aside input {
     display: none;
 }
 
+#transactions {
+    display: none;
+}
+
+#transactions td {
+    padding: 5px;
+    border: 1px solid #000000;
+}
+
 /* ==========================================================================
    Media Queries
    ========================================================================== */
