@@ -92,6 +92,8 @@
 
             transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.getJSON(transactionUrl, function(data) {
+                $('#general-message').html(''); // remove loading message and spinner
+
                 if (data.jsonCode && data.jsonCode === HTTP_OK) {
                     transactions = data.transactionList;
                     showTransactions(data.transactionList);
