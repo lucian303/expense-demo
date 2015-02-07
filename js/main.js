@@ -68,14 +68,28 @@
      * @param transactions
      */
     function showTransactions(transactions) {
-        var tableRows = '';
+        var tableRows = '',
+            transactionsTable = $('#transactions'),
+            transactionsTableBody = $('#transactions-body');
+
+        transactionsTable.hide();
+        transactionsTableBody.html(''); // clear transaction display
 
         transactions.forEach(function (value) {
             tableRows += '<tr><td>' + value.created +'</td><td>' + value.merchant + '</td><td>' + formatCents(value.amount) + '</td></tr>';
         });
 
-        $('#transactions-body').html(tableRows);
-        $('#transactions').show();
+        transactionsTableBody.html(tableRows);
+        transactionsTable.show();
+    }
+
+    /**
+     * Show a message in the transactions area
+     *
+     * @param message
+     */
+    function showGeneralMessage(message) {
+        $('#general-message').html(message);
     }
 
     /**
@@ -84,20 +98,18 @@
     function getTransactions() {
         var transactionUrl;
 
-        $('#transactions').hide();
-        $('#transactions-body').html(''); // clear transaction display
-
         if (user.authToken) {
-            $('#general-message').html('Loading transactions ... <img src="img/ajax-loader.gif" />');
+            showGeneralMessage('Loading transactions ... <img src="img/ajax-loader.gif" />');
 
             transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.getJSON(transactionUrl, function(data) {
-                $('#general-message').html(''); // remove loading message and spinner
-
                 if (data.jsonCode && data.jsonCode === HTTP_OK) {
                     transactions = data.transactionList;
                     showTransactions(data.transactionList);
                 }
+
+                showGeneralMessage(''); // remove loading transactions message and spinner
+                showCreateTransactionMessage(''); // clear the adding transaction message and spinner
             });
         } else {
             $('#general-message').html('There are no transactions because you are currently not logged in.');
@@ -155,7 +167,7 @@
             createTransactionUrl = '/api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
                 '&date=' + encodeURIComponent(date) +
                 '&merchant=' + encodeURIComponent(merchant) +
-                '&amount=' + encodeURIComponent(amount * 100); // supplied amount is in cents, not dollars
+                '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // supplied amount is in cents, not dollars
 
         showCreateTransactionMessage('Adding transaction ... <img src="img/ajax-loader.gif" />');
 
@@ -165,8 +177,6 @@
         }
 
         $.getJSON(createTransactionUrl, function (data) {
-            showCreateTransactionMessage('');
-
             if (data.jsonCode && data.jsonCode === HTTP_OK) {
                 getTransactions();
             } else {
