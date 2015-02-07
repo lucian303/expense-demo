@@ -4,7 +4,9 @@
     var user = {
             authToken: null,
             email: null
-        };
+        },
+        transactions,
+        HTTP_OK = 200;
 
     init();
 
@@ -13,6 +15,7 @@
      */
     function init() {
         checkAuth();
+        getTransactions();
     }
 
     /**
@@ -50,6 +53,36 @@
     }
 
     /**
+     * Show transactions in a table
+     *
+     * @param transactions
+     */
+    function showTransactions(transactions) {
+
+    }
+
+    /**
+     * Get transactions from API or show error message
+     */
+    function getTransactions() {
+        var transactionUrl;
+
+        if (user.authToken) {
+            $('#general-message').text('');
+
+            transactionUrl = '/api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
+            $.getJSON(transactionUrl, function(data) {
+                if (data.jsonCode && data.jsonCode === HTTP_OK) {
+                    transactions = data.transactionList;
+                    showTransactions(data.transactionList);
+                }
+            });
+        } else {
+            $('#general-message').text('There are no transactions because you are currently not logged in.');
+        }
+    }
+
+    /**
      * Login callback, attached to login button sets cookies and internal user object
      */
     $('#login').on('click', function () {
@@ -64,7 +97,7 @@
         }
 
         $.getJSON(loginUrl, function (data) {
-            if (data.jsonCode === 200) {
+            if (data.jsonCode && data.jsonCode === HTTP_OK) {
                 $.cookie('authToken', data.authToken);
                 $.cookie('email', data.email);
 
@@ -72,6 +105,7 @@
                 user.email = data.email;
 
                 checkAuth();
+                getTransactions();
             } else {
                 showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
             }
@@ -89,5 +123,6 @@
         user.email = null;
 
         checkAuth();
+        getTransactions();
     });
 }(jQuery));
