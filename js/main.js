@@ -1,7 +1,7 @@
 /**
  * Expensify Demo Controller
  *
- * @author Lucian Hontau
+ * @author Lucian Hontau <lucian303@gmail.com>
  */
 (function ($) {
     'use strict';

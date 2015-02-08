@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Local wrapper API layer script that wraps part of Expensify's remote API
  *
- * @author Lucian Hontau
+ * @author Lucian Hontau <lucian303@gmail.com>
  */
 run();
 
@@ -26,7 +27,12 @@ function run()
             break;
 
         case 'createtransaction':
-            $output = createTransaction(getParam('authToken'), getParam('date'), getParam('merchant'), getParam('amount'));
+            $output = createTransaction(
+                getParam('authToken'),
+                getParam('date'),
+                getParam('merchant'),
+                getParam('amount')
+            );
             break;
 
         default:
@@ -39,7 +45,7 @@ function run()
     $response = json_decode($output, true);
     if (isset($response['jsonCode'])) {
         http_response_code($response['jsonCode']);
-    } else if (isset($response['httpCode'])) {
+    } elseif (isset($response['httpCode'])) {
         http_response_code($response['httpCode']);
     } else {
         http_response_code(400); // bad request
