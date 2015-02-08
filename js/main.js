@@ -5,12 +5,13 @@
             authToken: null,
             email: null
         },
-        HTTP_OK = 200;
+        HTTP_OK = 200,
+        spinner = '<img src="img/ajax-loader.gif" />';
 
     init();
 
     /**
-     * Initialize application upon load/reload
+     * Initialize application upon loading or reloading
      */
     function init() {
         checkAuth();
@@ -59,7 +60,7 @@
     }
 
     /**
-     * Format an amount in cents into a dollar figure
+     * Format an amount given in cents into a dollar figure
      *
      * @param amount
      * @returns {string}
@@ -82,7 +83,8 @@
         transactionsTableBody.html(''); // clear transaction display
 
         transactions.forEach(function (value) {
-            tableRows += '<tr><td>' + value.created +'</td><td>' + value.merchant + '</td><td>' + formatCents(value.amount) + '</td></tr>';
+            tableRows += '<tr><td>' + value.created +'</td><td>' + value.merchant + '</td><td>' +
+                formatCents(value.amount) + '</td></tr>';
         });
 
         transactionsTableBody.html(tableRows);
@@ -99,13 +101,13 @@
     }
 
     /**
-     * Get transactions from API or show error message
+     * Get transactions from API
      */
     function getTransactions() {
         var transactionUrl;
 
         if (user.authToken) {
-            showGeneralMessage('Loading transactions ... <img src="img/ajax-loader.gif" />');
+            showGeneralMessage('Loading transactions ... ' + spinner);
 
             transactionUrl = 'api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.ajax(transactionUrl, {
@@ -146,7 +148,7 @@
             return;
         }
 
-        showLoginMessage('Loggin in ... <img src="img/ajax-loader.gif" />');
+        showLoginMessage('Loggin in ... ' + spinner);
 
         $.ajax(loginUrl, {
             success: function (data) {
@@ -160,11 +162,13 @@
                     checkAuth();
                     getTransactions();
                 } else {
-                    showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
+                    showLoginMessage('There was a problem logging in. ' +
+                        'Please check your username and password and try again.');
                 }
             },
             error: function () {
-                showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
+                showLoginMessage('There was a problem logging in.' +
+                    'Please check your username and password and try again.');
             },
             dataType: 'json'
         });
@@ -199,12 +203,12 @@
             return;
         }
 
-        showCreateTransactionMessage('Adding transaction ... <img src="img/ajax-loader.gif" />');
+        showCreateTransactionMessage('Adding transaction ... ' + spinner);
 
         createTransactionUrl = 'api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
             '&date=' + encodeURIComponent(date) +
             '&merchant=' + encodeURIComponent(merchant) +
-            '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // supplied amount is in cents, not dollars
+            '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // amount given is in cents, not dollars
 
         $.ajax(createTransactionUrl, {
             success: function (data) {
