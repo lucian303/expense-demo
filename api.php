@@ -1,11 +1,16 @@
 <?php
-
+/**
+ * Local wrapper API layer script that wraps part of Expensify's remote API
+ *
+ * @author Lucian Hontau
+ */
 run();
 exit;
 
 /**
- * Main script body. Makes different calls depending on input params
- * Note, we're relying on the API to validate input
+ * Main function. Makes different calls depending on input params
+ * Note the API does input validation and will error out if the values are not correct
+ * We just guarantee that each paramter has a value
  */
 function run()
 {
