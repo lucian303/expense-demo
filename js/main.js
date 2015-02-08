@@ -13,16 +13,6 @@
         HTTP_OK = 200,
         spinner = '<img src="img/ajax-loader.gif" />';
 
-    init();
-
-    /**
-     * Initialize application upon loading or reloading
-     */
-    function init() {
-        checkAuth();
-        getTransactions();
-    }
-
     /**
      * Show a login message or error
      *
@@ -31,6 +21,39 @@
     function showLoginMessage(message) {
         $('#login-message').html(message);
     }
+
+    /**
+     * Show a message in the transactions area
+     *
+     * @param message
+     */
+    function showGeneralMessage(message) {
+        $('#general-message').html(message);
+    }
+
+    /**
+     * Show information and error messages when adding a transaction
+     *
+     * @param message
+     */
+    function showCreateTransactionMessage(message) {
+        $('#add-transaction-message').html(message);
+    }
+
+    /**
+     * Called if the "get" API command fails
+     */
+    function showCreateTansactionError() {
+        showCreateTransactionMessage('There was a problem adding the transaction.');
+    }
+
+    /**
+     * Called if the "authorize" API call fails
+     */
+    function showLoginError() {
+        showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
+    }
+
 
     /**
      * Check authentication cookie and show logged in or logged out view
@@ -91,21 +114,12 @@
         transactionsTableBody.html(''); // clear transaction display
 
         transactions.forEach(function (value) {
-            tableRows += '<tr><td>' + value.created +'</td><td>' + value.merchant + '</td><td>' +
+            tableRows += '<tr><td>' + value.created + '</td><td>' + value.merchant + '</td><td>' +
                 formatCents(value.amount) + '</td></tr>';
         });
 
         transactionsTableBody.html(tableRows);
         transactionsTable.show();
-    }
-
-    /**
-     * Show a message in the transactions area
-     *
-     * @param message
-     */
-    function showGeneralMessage(message) {
-        $('#general-message').html(message);
     }
 
     /**
@@ -138,13 +152,6 @@
                 dataType: 'json'
             });
         }
-    }
-
-    /**
-     * Called if the "authorize" API call fails
-     */
-    function showLoginError() {
-        showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
     }
 
     /**
@@ -187,21 +194,6 @@
         });
     });
 
-    /**
-     * Show information and error messages when adding a transaction
-     *
-     * @param message
-     */
-    function showCreateTransactionMessage(message) {
-        $('#add-transaction-message').html(message);
-    }
-
-    /**
-     * Called if the "get" API command fails
-     */
-    function showCreateTansactionError() {
-        showCreateTransactionMessage('There was a problem adding the transaction.');
-    }
 
     /**
      * Callback for the add transaction button
@@ -228,7 +220,7 @@
         createTransactionUrl = 'api.php?command=createTransaction&authToken=' + encodeURIComponent(user.authToken) +
             '&date=' + encodeURIComponent(date) +
             '&merchant=' + encodeURIComponent(merchant) +
-            '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // amount given is in cents, not dollars
+            '&amount=' + encodeURIComponent(Number(amount).toFixed(2) * 100); // convert cents to dollars
 
         $.ajax(createTransactionUrl, {
             success: function (data) {
@@ -261,4 +253,14 @@
         checkAuth();
         showLoginMessage('You have been logged out.');
     });
+
+    /**
+     * Initialize application upon loading or reloading
+     */
+    function init() {
+        checkAuth();
+        getTransactions();
+    }
+
+    init();
 }(jQuery));
