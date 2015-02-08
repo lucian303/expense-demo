@@ -1,12 +1,13 @@
 <?php
 
-init();
+run();
+exit;
 
 /**
  * Main script body. Makes different calls depending on input params
  * Note, we're relying on the API to validate input
  */
-function init()
+function run()
 {
     $command = getParam('command');
     switch (strtolower($command)) {
@@ -33,8 +34,8 @@ function init()
             // Send a page not found and equivalent JSON if a proper command was not issued
             http_response_code(404);
             print json_encode(['jsonCode' => 404]);
-            die;
-            break; // not necessary but left here in case the block is changed not to die in the future
+            exit;
+            break; // not necessary but left here in case the block is changed not to exit in the future
     }
 
     header('Content-type: application/json');
@@ -47,7 +48,7 @@ function init()
  *
  * @param $name
  */
-function missingParameter($name)
+function showMissingParamError($name)
 {
     http_response_code(400);
     print json_encode([
@@ -55,7 +56,7 @@ function missingParameter($name)
         'message' => "Parameter '$name' must be specified",
     ]);
 
-    die;
+    exit;
 }
 
 /**
@@ -71,7 +72,7 @@ function getParam($name)
         return $_GET[$name];
     }
 
-    missingParameter($name);
+    showMissingParamError($name);
 }
 
 /**
