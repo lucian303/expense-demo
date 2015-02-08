@@ -54,7 +54,7 @@ function run()
  *
  * @param string $name
  *
- * @return mixed|null
+ * @return mixed
  */
 function getParam($name)
 {
