@@ -37,6 +37,8 @@ function init()
             break; // not necessary but left here in case the block is changed not to die in the future
     }
 
+    header('Content-type: application/json');
+    http_response_code(200);
     print $output;
 }
 
