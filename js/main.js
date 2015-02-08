@@ -18,7 +18,7 @@
     /**
      * Show a login message or error
      *
-     * @param message
+     * @param {string} message
      */
     function showLoginMessage(message) {
         $('#login-message').html(message);
@@ -27,7 +27,7 @@
     /**
      * Show a message in the transactions area
      *
-     * @param message
+     * @param {string} message
      */
     function showGeneralMessage(message) {
         $('#general-message').html(message);
@@ -36,7 +36,7 @@
     /**
      * Show information and error messages when adding a transaction
      *
-     * @param message
+     * @param {string} message
      */
     function showCreateTransactionMessage(message) {
         $('#add-transaction-message').html(message);
@@ -95,8 +95,8 @@
     /**
      * Format an amount given in cents into a dollar figure
      *
-     * @param amount
-     * @returns {string}
+     * @param {number} amount
+     * @return {string}
      */
     function formatCents(amount) {
         return '$' + (amount / 100).toFixed(2); // amount is stored in cents
@@ -105,7 +105,7 @@
     /**
      * Show transactions in a table
      *
-     * @param transactions
+     * @param {Array} transactions
      */
     function showTransactions(transactions) {
         var tableRows = '',
