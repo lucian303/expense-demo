@@ -10,8 +10,10 @@
             authToken: null,
             email: null
         },
-        HTTP_OK = 200,
-        spinner = '<img src="img/ajax-loader.gif" />';
+        spinner = '<img src="img/ajax-loader.gif" />',
+        loginCallback,
+        addTransactionCallback,
+        HTTP_OK = 200;
 
     /**
      * Show a login message or error
@@ -157,7 +159,7 @@
     /**
      * Login callback, attached to login button sets cookies and internal user object
      */
-    $('#login-button').on('click', function () {
+    loginCallback = function () {
         var email = $('#login-email').val(),
             password = $('#login-password').val(),
             loginUrl = 'api.php?command=authenticate&email=' + encodeURIComponent(email) +
@@ -192,13 +194,12 @@
             },
             dataType: 'json'
         });
-    });
-
+    };
 
     /**
      * Callback for the add transaction button
      */
-    $('#add-transaction-button').on('click', function () {
+    addTransactionCallback = function () {
         var date = $('#add-transaction-date').val(),
             merchant = $('#add-transaction-merchant').val(),
             amount = $('#add-transaction-amount').val(),
@@ -238,7 +239,7 @@
             },
             dataType: 'json'
         });
-    });
+    };
 
     /**
      * Logout callback clears cookies and user object
@@ -258,6 +259,24 @@
      * Initialize application upon loading or reloading
      */
     function init() {
+        // Add events to both buttons and keyboard
+        // Login
+        $('#login-button').on('click', loginCallback);
+        $('#login-email, #login-password').on('keydown', function (event) {
+            if (event.which === 13) {
+                loginCallback();
+            }
+        });
+
+        // Add transaction
+        $('#add-transaction-button').on('click', addTransactionCallback);
+        $('#add-transaction-date, #add-transaction-merchant, #add-transaction-amount').on('keydown', function (event) {
+            if (event.which === 13) {
+                addTransactionCallback();
+            }
+        });
+
+        // Start app
         checkAuth();
         getTransactions();
     }
