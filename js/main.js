@@ -52,14 +52,17 @@
                 $('#logged-in-email').text('');
             }
         } else {
-            // Show logout messages and hide/clear everything else
+            // clear etransactions
             $('#transactions').hide();
-            $('#logged-in-aside').hide();
-            $('#logged-out-aside').show();
             $('#transactions-body').html('');
 
-            showLoginMessage('');
+            // show logged out panel
+            $('#logged-in-aside').hide();
+            $('#logged-out-aside').show();
+
+            // clear / set messages
             showGeneralMessage('There are no transactions because you are currently not logged in.');
+            showLoginMessage('');
             showCreateTransactionMessage('');
         }
     }
