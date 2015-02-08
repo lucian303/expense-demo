@@ -1,3 +1,6 @@
+/**
+ * Expensify Demo Controller
+ */
 (function ($) {
     'use strict';
 
@@ -133,6 +136,13 @@
     }
 
     /**
+     * Called if the "authorize" API call fails
+     */
+    function showLoginError() {
+        showLoginMessage('There was a problem logging in. Please check your username and password and try again.');
+    }
+
+    /**
      * Login callback, attached to login button sets cookies and internal user object
      */
     $('#login-button').on('click', function () {
@@ -162,13 +172,11 @@
                     checkAuth();
                     getTransactions();
                 } else {
-                    showLoginMessage('There was a problem logging in. ' +
-                        'Please check your username and password and try again.');
+                    showLoginError();
                 }
             },
             error: function () {
-                showLoginMessage('There was a problem logging in.' +
-                    'Please check your username and password and try again.');
+                showLoginError();
             },
             dataType: 'json'
         });
@@ -181,6 +189,13 @@
      */
     function showCreateTransactionMessage(message) {
         $('#add-transaction-message').html(message);
+    }
+
+    /**
+     * Called if the "get" API command fails
+     */
+    function showCreateTansactionError() {
+        showCreateTransactionMessage('There was a problem adding the transaction.');
     }
 
     /**
@@ -217,12 +232,12 @@
                     if (data.jsonCode && data.jsonCode === HTTP_OK) {
                         getTransactions();
                     } else {
-                        showCreateTransactionMessage('There was a problem adding the transaction.');
+                        showCreateTansactionError();
                     }
                 }
             },
             error: function () {
-                showCreateTransactionMessage('There was a problem adding the transactionblah.');
+                showCreateTansactionError();
             },
             dataType: 'json'
         });
