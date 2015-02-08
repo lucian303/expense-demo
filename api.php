@@ -5,7 +5,6 @@
  * @author Lucian Hontau
  */
 run();
-exit;
 
 /**
  * Main function. Makes different calls depending on input params
@@ -14,25 +13,20 @@ exit;
  */
 function run()
 {
+    header('Content-type: application/json');
+
     $command = getParam('command');
     switch (strtolower($command)) {
         case 'authenticate':
-            $email = getParam('email');
-            $password = getParam('password');
-            $output = authenticate($email, $password);
+            $output = authenticate(getParam('email'), getParam('password'));
             break;
 
         case 'get':
-            $authToken = getParam('authToken');
-            $output = getTransactions($authToken);
+            $output = getTransactions(getParam('authToken'));
             break;
 
         case 'createtransaction':
-            $authToken = getParam('authToken');
-            $date = getParam('date');
-            $merchant = getParam('merchant');
-            $amount = getParam('amount');
-            $output = createTransaction($authToken, $date, $merchant, $amount);
+            $output = createTransaction(getParam('authToken'), getParam('date'), getParam('merchant'), getParam('amount'));
             break;
 
         default:
@@ -40,21 +34,35 @@ function run()
             http_response_code(404);
             print json_encode(['jsonCode' => 404]);
             exit;
-            break; // not necessary but left here in case the block is changed not to exit in the future
     }
 
-    header('Content-type: application/json');
-    http_response_code(200);
+    $response = json_decode($output, true);
+    if (isset($response['jsonCode'])) {
+        http_response_code($response['jsonCode']);
+    } else if (isset($response['httpCode'])) {
+        http_response_code($response['httpCode']);
+    } else {
+        http_response_code(400); // bad request
+    }
+
     print $output;
+    exit;
 }
 
 /**
- * Return an error message if a parameter is not specified
+ * Get a GET parameter or show error if not found
  *
- * @param $name
+ * @param string $name
+ *
+ * @return mixed|null
  */
-function showMissingParamError($name)
+function getParam($name)
 {
+    if (isset($_GET[$name])) {
+        return $_GET[$name];
+    }
+
+    // If param was not found, return a 400 (bad request)
     http_response_code(400);
     print json_encode([
         'jsonCode' => 400,
@@ -65,26 +73,10 @@ function showMissingParamError($name)
 }
 
 /**
- * Get a GET parameter or show error if not found
- *
- * @param $name
- *
- * @return mixed|null
- */
-function getParam($name)
-{
-    if (isset($_GET[$name])) {
-        return $_GET[$name];
-    }
-
-    showMissingParamError($name);
-}
-
-/**
  * Authenticate with the expensify API
  *
- * @param $email
- * @param $pass
+ * @param string $email
+ * @param string $pass
  *
  * @return string
  */
@@ -103,7 +95,7 @@ function authenticate($email, $pass)
 /**
  * Get list of all transactions on the account
  *
- * @param $authToken
+ * @param string $authToken
  *
  * @return string
  */
@@ -117,10 +109,12 @@ function getTransactions($authToken)
 }
 
 /**
- * @param $authToken
- * @param $date
- * @param $merchant
- * @param $amount
+ * Add a transaction through the API
+ *
+ * @param string $authToken
+ * @param string $date
+ * @param string $merchant
+ * @param int $amount
  *
  * @return string
  */
@@ -138,17 +132,15 @@ function createTransaction($authToken, $date, $merchant, $amount)
 }
 
 /**
- * Make a CURL call to a URL
+ * Make a CURL call to a given URL
  *
- * @param $url
+ * @param string $url
  *
  * @return string
  */
 function makeCall($url)
 {
-    $headers = [
-        'Accept: application/json',
-    ];
+    $headers = ['Accept: application/json'];
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
