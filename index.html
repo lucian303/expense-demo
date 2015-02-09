@@ -48,7 +48,7 @@
                 <!-- Logged out box-->
                 <aside id="logged-out-aside">
                     <h3>Login</h3>
-                    <form>
+                    <form id="login-form">
                         <div>
                             <label for="login-email">E-mail:&nbsp;</label><input type="text" id="login-email" />
                         </div>
@@ -56,7 +56,7 @@
                             <label for="login-password">Password:&nbsp;</label><input type="password" id="login-password" />
                         </div>
                         <div>
-                            <input type="button" id="login-button" value="Login" class="expensify-button" />
+                            <input type="submit" id="login-button" value="Login" class="expensify-button" />
                         </div>
                     </form>
                     <p id="login-message"></p>
@@ -68,8 +68,8 @@
                     <div>
                         <input type="button" id="logout-button" value="Logout" class="expensify-button" />
                     </div>
-                    <div id="add-transaction-form">
-                        <form>
+                    <div>
+                        <form id="add-transaction-form">
                             <div>
                                 <label for="add-transaction-date">Date:&nbsp;</label><input type="text" id="add-transaction-date" />
                             </div>
@@ -80,7 +80,7 @@
                                 <label for="add-transaction-amount">Amount:&nbsp;</label><input type="text" id="add-transaction-amount" />
                             </div>
                             <div>
-                                <input type="button" id="add-transaction-button" value="Add Transaction" class="expensify-button" />
+                                <input type="submit" id="add-transaction-button" value="Add Transaction" class="expensify-button" />
                             </div>
                         </form>
                         <p id="add-transaction-message"></p>

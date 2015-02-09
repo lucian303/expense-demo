@@ -13,8 +13,7 @@
         spinner = '<img src="img/ajax-loader.gif" />',
         loginCallback,
         addTransactionCallback,
-        HTTP_OK = 200,
-        KEY_ENTER = 13;
+        HTTP_OK = 200;
 
     /**
      * Show a login message or error
@@ -170,7 +169,7 @@
 
         if (!email || !password) {
             showLoginMessage('Both username and password must be specified.');
-            return;
+            return false;
         }
 
         showLoginMessage('Loggin in ... ' + spinner);
@@ -195,6 +194,8 @@
             },
             dataType: 'json'
         });
+
+        return false;
     };
 
     /**
@@ -209,12 +210,12 @@
         // Check for some common errors
         if (isNaN(amount)) {
             showCreateTransactionMessage('Amount must be a number.');
-            return;
+            return false;
         }
 
         if (!date || !merchant || !amount) {
             showCreateTransactionMessage('Date, merchant, and amount must all be specified.');
-            return;
+            return false;
         }
 
         showCreateTransactionMessage('Adding transaction ... ' + spinner);
@@ -240,6 +241,8 @@
             },
             dataType: 'json'
         });
+
+        return false;
     };
 
     /**
@@ -260,22 +263,8 @@
      * Initialize and run the application upon loading or reloading and attach event handlers
      */
     function run() {
-        // Add events to both buttons and keyboard
-        // Login
-        $('#login-button').on('click', loginCallback);
-        $('#login-email, #login-password').on('keydown', function (event) {
-            if (event.which === KEY_ENTER) {
-                loginCallback();
-            }
-        });
-
-        // Add transaction
-        $('#add-transaction-button').on('click', addTransactionCallback);
-        $('#add-transaction-date, #add-transaction-merchant, #add-transaction-amount').on('keydown', function (event) {
-            if (event.which === KEY_ENTER) {
-                addTransactionCallback();
-            }
-        });
+        $('#login-form').on('submit', loginCallback);
+        $('#add-transaction-form').on('submit', addTransactionCallback);
 
         // Start app
         checkAuth();
