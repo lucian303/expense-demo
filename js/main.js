@@ -136,7 +136,7 @@
 
             transactionUrl = 'api.php?command=get&authToken=' + encodeURIComponent(user.authToken);
             $.ajax(transactionUrl, {
-                success: function(data) {
+                success: function (data) {
                     // Check authToken just in case the user logged out while we were waiting for the callback to fire
                     if (user.authToken) {
                         showGeneralMessage(''); // remove loading transactions message and spinner
@@ -158,7 +158,7 @@
     }
 
     /**
-     * Login callback, attached to login button sets cookies and internal user object
+     * Login callback, attached to login button sets login cookies and internal user object
      */
     loginCallback = function () {
         var email = $('#login-email').val(),
@@ -166,7 +166,7 @@
             loginUrl = 'api.php?command=authenticate&email=' + encodeURIComponent(email) +
                 '&password=' + encodeURIComponent(password);
 
-        showLoginMessage('');
+        showLoginMessage(''); // clear any previous login messages
 
         if (!email || !password) {
             showLoginMessage('Both username and password must be specified.');
@@ -257,7 +257,7 @@
     });
 
     /**
-     * Initialize application upon loading or reloading and attach error handlers
+     * Initialize and run the application upon loading or reloading and attach event handlers
      */
     function run() {
         // Add events to both buttons and keyboard
