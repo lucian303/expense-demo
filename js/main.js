@@ -13,7 +13,8 @@
         spinner = '<img src="img/ajax-loader.gif" />',
         loginCallback,
         addTransactionCallback,
-        HTTP_OK = 200;
+        HTTP_OK = 200,
+        KEY_ENTER = 13;
 
     /**
      * Show a login message or error
@@ -256,14 +257,14 @@
     });
 
     /**
-     * Initialize application upon loading or reloading
+     * Initialize application upon loading or reloading and attach error handlers
      */
-    function init() {
+    function run() {
         // Add events to both buttons and keyboard
         // Login
         $('#login-button').on('click', loginCallback);
         $('#login-email, #login-password').on('keydown', function (event) {
-            if (event.which === 13) {
+            if (event.which === KEY_ENTER) {
                 loginCallback();
             }
         });
@@ -271,7 +272,7 @@
         // Add transaction
         $('#add-transaction-button').on('click', addTransactionCallback);
         $('#add-transaction-date, #add-transaction-merchant, #add-transaction-amount').on('keydown', function (event) {
-            if (event.which === 13) {
+            if (event.which === KEY_ENTER) {
                 addTransactionCallback();
             }
         });
@@ -281,5 +282,5 @@
         getTransactions();
     }
 
-    init();
+    run();
 }(jQuery));
